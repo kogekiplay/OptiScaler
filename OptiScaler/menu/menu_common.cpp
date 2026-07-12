@@ -7399,8 +7399,9 @@ void MenuCommon::Init(HWND InHwnd, bool isUWP)
         if (Config::Instance()->FontSize.has_value())
             fontSize = Config::Instance()->FontSize.value();
 
-        const auto* glyphRanges =
-            needsCjkFont ? atlas->GetGlyphRangesChineseSimplifiedCommon() : atlas->GetGlyphRangesDefault();
+        // ImGui 1.92 dynamically requests glyphs when the renderer supports textures.
+        // A null range keeps that path enabled and avoids the disabled legacy range helpers.
+        const ImWchar* glyphRanges = nullptr;
 
         if (Config::Instance()->TTFFontPath.has_value())
         {
