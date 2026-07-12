@@ -37,6 +37,32 @@
 #include <hooks/Xell_Hooks.h>
 #include <low_latency/input/input_common.h>
 
+#define Begin LocalizedBegin
+#define BeginCombo LocalizedBeginCombo
+#define Button LocalizedButton
+#define CalcTextSize LocalizedCalcTextSize
+#define Checkbox LocalizedCheckbox
+#define CheckboxFlags LocalizedCheckboxFlags
+#define ColorEdit3 LocalizedColorEdit3
+#define Combo LocalizedCombo
+#define InputFloat LocalizedInputFloat
+#define InputInt LocalizedInputInt
+#define InputScalar LocalizedInputScalar
+#define PlotLines LocalizedPlotLines
+#define RadioButton LocalizedRadioButton
+#define Selectable LocalizedSelectable
+#define SeparatorText LocalizedSeparatorText
+#define SetTooltip LocalizedSetTooltip
+#define SliderFloat LocalizedSliderFloat
+#define SliderInt LocalizedSliderInt
+#define TableSetupColumn LocalizedTableSetupColumn
+#define Text LocalizedText
+#define TextColored LocalizedTextColored
+#define TextDisabled LocalizedTextDisabled
+#define TextLinkOpenURL LocalizedTextLinkOpenURL
+#define TextWrapped LocalizedTextWrapped
+#define TreeNode LocalizedTreeNode
+
 #define MARK_ALL_BACKENDS_CHANGED()                                                                                    \
     for (auto& singleChangeBackend : State::Instance().changeBackend)                                                  \
         singleChangeBackend.second = true;
@@ -229,6 +255,8 @@ struct FlagDefinition
 
 inline std::string StrFmt(const char* fmt, ...)
 {
+    fmt = MenuLocalization::TranslateText(fmt);
+
     va_list args;
     va_start(args, fmt);
     int len = std::vsnprintf(nullptr, 0, fmt, args);
@@ -330,7 +358,8 @@ inline void MenuCommon::ReInitUpscaler()
 void MenuCommon::SeparatorWithHelpMarker(const char* label, const char* tip)
 {
     auto marker = "(?) ";
-    ImGui::SeparatorTextEx(0, label, ImGui::FindRenderedTextEnd(label),
+    const auto* localizedLabel = MenuLocalization::TranslateText(label);
+    ImGui::SeparatorTextEx(0, localizedLabel, ImGui::FindRenderedTextEnd(localizedLabel),
                            ImGui::CalcTextSize(marker, ImGui::FindRenderedTextEnd(marker)).x);
     ShowHelpMarker(tip);
 }
@@ -815,7 +844,7 @@ void MenuCommon::PopulateCombo(const std::string& name, TStorage& currentValue,
 
             // Show tooltip for the individual item if it exists
             if (!opt.tooltip.empty() && ImGui::IsItemHovered(ImGuiHoveredFlags_AllowWhenDisabled))
-                ImGui::SetTooltip("%s", opt.tooltip.c_str());
+                ImGui::SetTooltip("%s", MenuLocalization::TranslateText(opt.tooltip.c_str()));
 
             if (opt.disabled)
                 ImGui::EndDisabled();
@@ -1394,9 +1423,9 @@ void MenuCommon::UpdateVersionAndStartupNotifications(RenderMenuContext& ctx)
             const auto notice = [&]()
             {
                 ImGuiToast updateNotification { ImGuiToastType::Error, updateNoticeTime };
-                updateNotification.setTitle("OptiScaler Update available");
+                updateNotification.setTitle(MenuLocalization::TranslateText("OptiScaler Update available"));
                 updateNotification.setContent(
-                    "Press %s for more info",
+                    MenuLocalization::TranslateText("Press %s for more info"),
                     Keybind::KeyNameFromVirtualKeyCode(config->ShortcutKey.value_or_default()).c_str());
                 ImGui::InsertNotification(updateNotification);
                 return true;
@@ -1414,9 +1443,10 @@ void MenuCommon::UpdateVersionAndStartupNotifications(RenderMenuContext& ctx)
             to_lower_in_place(filename);
 
             ImGuiToast notification { ImGuiToastType::Warning, 10000 };
-            notification.setTitle("Late Streamline hook detected");
+            notification.setTitle(MenuLocalization::TranslateText("Late Streamline hook detected"));
             notification.setContent(
-                "Consider renaming OptiScaler from %s to other supported name.\nYou may experience issues otherwise.",
+                MenuLocalization::TranslateText(
+                    "Consider renaming OptiScaler from %s to other supported name.\nYou may experience issues otherwise."),
                 filename.c_str());
             ImGui::InsertNotification(notification);
         }
@@ -1424,8 +1454,8 @@ void MenuCommon::UpdateVersionAndStartupNotifications(RenderMenuContext& ctx)
         if (state.postCodes & PostCode::TryingFsr4Fp8OnUnsupported)
         {
             ImGuiToast notification { ImGuiToastType::Warning, 10000 };
-            notification.setTitle("Silly goose detected");
-            notification.setContent("FSR 4 FP8 only works on AMD");
+            notification.setTitle(MenuLocalization::TranslateText("Silly goose detected"));
+            notification.setContent(MenuLocalization::TranslateText("FSR 4 FP8 only works on AMD"));
             ImGui::InsertNotification(notification);
         }
 
@@ -3927,7 +3957,8 @@ void MenuCommon::RenderFrameGenerationRuntimeSettings(RenderMenuContext& ctx)
         ImGui::SameLine();
         if (auto count = state.dlssgDetectedInterpolationCount; count > 0)
         {
-            ImGui::TextColored(toneMapColor(ImVec4(0.f, 1.f, 0.25f, 1.f)), std::format("ON {}x", count + 1).c_str());
+            ImGui::TextColored(toneMapColor(ImVec4(0.f, 1.f, 0.25f, 1.f)),
+                               std::format("{} {}x", MenuLocalization::TranslateText("ON"), count + 1).c_str());
         }
         else
         {
@@ -4375,7 +4406,8 @@ void MenuCommon::RenderFrameGenerationRuntimeSettings(RenderMenuContext& ctx)
                 if (auto count = state.dlssgDetectedInterpolationCount; count > 0)
                 {
                     ImGui::TextColored(toneMapColor(ImVec4(0.f, 1.f, 0.25f, 1.f)),
-                                       std::format("ON {}x", count + 1).c_str());
+                                       std::format("{} {}x", MenuLocalization::TranslateText("ON"), count + 1)
+                                           .c_str());
                 }
                 else
                 {
@@ -4460,7 +4492,7 @@ void MenuCommon::RenderFrameGenerationRuntimeSettings(RenderMenuContext& ctx)
 
                         if (ImGui::IsItemHovered() && !flag.description.empty())
                         {
-                            ImGui::SetTooltip("%s", flag.description.c_str());
+                            ImGui::SetTooltip("%s", MenuLocalization::TranslateText(flag.description.c_str()));
                         }
                     }
                 }
@@ -4727,7 +4759,7 @@ void MenuCommon::RenderFramerateSettings(RenderMenuContext& ctx)
         if (fakenvapiInactive)
             currentMethod.append(" (inactive)");
 
-        ImGui::Text("Current method: %s", currentMethod.c_str());
+        ImGui::Text("Current method: %s", MenuLocalization::TranslateText(currentMethod.c_str()));
 
         if (fakenvapiMode == LowLatencyMode::AntiLag2)
             ShowHelpMarker("FSR Anti-Lag 2.0 is the new name for AntiLag 2\nDon't ask me why");
@@ -4907,11 +4939,13 @@ void MenuCommon::RenderLowLatencySettings(RenderMenuContext& ctx)
 
         ImGui::TableNextColumn();
 
-        ImGui::Text("Active input: %s", GetMenuOptionLabel(lowLatencyInput, activeInput).c_str());
+        ImGui::Text("Active input: %s",
+                    MenuLocalization::TranslateText(GetMenuOptionLabel(lowLatencyInput, activeInput).c_str()));
 
         ImGui::TableNextColumn();
 
-        ImGui::Text("Active output: %s", GetMenuOptionLabel(lowLatencyOutput, activeOutput).c_str());
+        ImGui::Text("Active output: %s",
+                    MenuLocalization::TranslateText(GetMenuOptionLabel(lowLatencyOutput, activeOutput).c_str()));
 
         ImGui::EndTable();
     }
@@ -5405,7 +5439,8 @@ void MenuCommon::RenderActiveImageSettings(RenderMenuContext& ctx)
                 if (currentFeature != nullptr && !currentFeature->IsFrozen())
                 {
                     ImGui::Text("Output Scaling is %s, Target Res: %dx%d (%.2f)\nJitter Count: %d",
-                                config->OutputScalingEnabled.value_or_default() ? "ENABLED" : "DISABLED",
+                                MenuLocalization::TranslateText(
+                                    config->OutputScalingEnabled.value_or_default() ? "ENABLED" : "DISABLED"),
                                 (uint32_t) (currentFeature->DisplayWidth() * _ssRatio),
                                 (uint32_t) (currentFeature->DisplayHeight() * _ssRatio),
                                 ((float) currentFeature->DisplayWidth() * _ssRatio) /
@@ -5809,6 +5844,14 @@ void MenuCommon::RenderThemeSettings(RenderMenuContext& ctx)
     if (auto ch = ScopedCollapsingHeader("Menu Theme and Color"); ch.IsHeaderOpen())
     {
         ScopedIndent indent {};
+        ImGui::Spacing();
+
+        const char* languages[] = { "Simplified Chinese", "English" };
+        int languageIndex = MenuLocalization::IsSimplifiedChinese() ? 0 : 1;
+        if (ImGui::Combo("Language", &languageIndex, languages, IM_ARRAYSIZE(languages)))
+            config->MenuLanguage = languageIndex == 0 ? "zh-CN" : "en-US";
+        ShowHelpMarker("The language changes immediately. Restart the game if the Chinese font cannot be loaded.");
+
         ImGui::Spacing();
 
         bool lightTheme = config->LightTheme.value_or_default();
@@ -7106,7 +7149,7 @@ void MenuCommon::RenderHudlessResourcesWindow(RenderMenuContext& ctx, ImGuiWindo
                     ImGui::Text("%08x, %s->%s, Count: %llu, %s", (size_t) it->first,
                                 GetSourceString(it->second.captureInfo & 0xFF).c_str(),
                                 GetDispatchString(it->second.captureInfo & 0xFF00).c_str(), it->second.usageCount,
-                                it->second.enabled ? "Active" : "Passive");
+                                MenuLocalization::TranslateText(it->second.enabled ? "Active" : "Passive"));
 
                     ImGui::TableSetColumnIndex(1);
 
@@ -7114,9 +7157,9 @@ void MenuCommon::RenderHudlessResourcesWindow(RenderMenuContext& ctx, ImGuiWindo
                     std::string text;
 
                     if (it->second.enabled)
-                        text = StrFmt("Disable##%d", btnCount);
+                        text = std::format("Disable##{}", btnCount);
                     else
-                        text = StrFmt("Enable##%d", btnCount);
+                        text = std::format("Enable##{}", btnCount);
 
                     if (ImGui::Button(text.c_str()))
                     {
@@ -7344,10 +7387,12 @@ void MenuCommon::Init(HWND InHwnd, bool isUWP)
         }
     }
 
-    if (io.Fonts->Fonts.empty() && Config::Instance()->UseHQFont.value_or_default())
+    const bool needsCjkFont = MenuLocalization::IsSimplifiedChinese();
+    if (io.Fonts->Fonts.empty() && (Config::Instance()->UseHQFont.value_or_default() || needsCjkFont))
     {
         ImFontAtlas* atlas = io.Fonts;
         atlas->Clear();
+        io.FontDefault = nullptr;
 
         // This automatically becomes the next default font
         ImFontConfig fontConfig;
@@ -7355,13 +7400,34 @@ void MenuCommon::Init(HWND InHwnd, bool isUWP)
         if (Config::Instance()->FontSize.has_value())
             fontSize = Config::Instance()->FontSize.value();
 
+        const auto* glyphRanges =
+            needsCjkFont ? atlas->GetGlyphRangesChineseSimplifiedCommon() : atlas->GetGlyphRangesDefault();
+
         if (Config::Instance()->TTFFontPath.has_value())
         {
-            io.FontDefault =
-                atlas->AddFontFromFileTTF(wstring_to_string(Config::Instance()->TTFFontPath.value()).c_str(), fontSize,
-                                          &fontConfig, io.Fonts->GetGlyphRangesDefault());
+            const auto configuredFont = wstring_to_string(Config::Instance()->TTFFontPath.value());
+            io.FontDefault = atlas->AddFontFromFileTTF(configuredFont.c_str(), fontSize, &fontConfig, glyphRanges);
+
+            if (io.FontDefault == nullptr)
+                LOG_WARN("Failed to load configured menu font: {}", configuredFont);
         }
-        else
+
+        if (io.FontDefault == nullptr && needsCjkFont)
+        {
+            const auto cjkFontPath = MenuLocalization::FindCjkFontPath();
+            if (!cjkFontPath.empty())
+            {
+                const auto cjkFont = wstring_to_string(cjkFontPath);
+                io.FontDefault = atlas->AddFontFromFileTTF(cjkFont.c_str(), fontSize, &fontConfig, glyphRanges);
+                LOG_INFO("Using CJK menu font: {}", cjkFont);
+            }
+            else
+            {
+                LOG_WARN("No CJK font was found. Set [Menu] TTFFontPath to a font containing Simplified Chinese.");
+            }
+        }
+
+        if (io.FontDefault == nullptr)
         {
             io.FontDefault = atlas->AddFontFromMemoryCompressedBase85TTF(hack_compressed_compressed_data_base85,
                                                                          fontSize, &fontConfig);

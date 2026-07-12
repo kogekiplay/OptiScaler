@@ -414,6 +414,10 @@ These can be changed from the in-game menu with real-time results.
 ### Menu
 ```ini
 [Menu]
+; Interface language used by the in-game menu
+; zh-CN or en-US - Default (auto) is zh-CN in the Chinese fork
+Language=zh-CN
+
 ; In-game ImGui menu scale
 ; 1.0 to 2.0 - Default (auto) is 1.0
 Scale=auto

@@ -275,6 +275,21 @@
     <ClInclude Include="menu\font\Hack_Compressed.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="menu\localization.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\translations_zh_cn_core.inc">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\translations_zh_cn_1.inc">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\translations_zh_cn_2.inc">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="menu\translations_zh_cn_3.inc">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="menu\menu_dx_base.h">
       <Filter>Header Files</Filter>
     </ClInclude>

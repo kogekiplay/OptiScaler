@@ -5,6 +5,8 @@
 
 #include <imgui/imgui.h>
 
+#include "localization.h"
+
 class ScopedIndent
 {
   public:
@@ -26,7 +28,7 @@ class ScopedCollapsingHeader
         ImGui::BeginChild("##CollapsingHeaderChild", ImVec2(0, 0), ImGuiChildFlags_AutoResizeY,
                           ImGuiWindowFlags_NoScrollbar | ImGuiWindowFlags_NoScrollWithMouse);
 
-        _headerOpen = ImGui::CollapsingHeader(label, flags);
+        _headerOpen = ImGui::CollapsingHeader(MenuLocalization::TranslateLabel(label), flags);
         _active = true;
     }
 
