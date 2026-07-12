@@ -2,10 +2,10 @@
 
 show_help() {
     echo ""
-    echo "Usage: $0 [OPTIONS]"
+    echo "用法：$0 [选项]"
     echo ""
-    echo "Options:"
-    echo "  --filename=<string>        Set target filename for OptiScaler.dll. Options are:"
+    echo "选项："
+    echo "  --filename=<string>        设置 OptiScaler.dll 的目标文件名，可选值："
     echo "                            - dxgi.dll"
     echo "                            - winmm.dll"
     echo "                            - version.dll"
@@ -15,12 +15,12 @@ show_help() {
     echo "                            - winhttp.dll"
     echo "                            - OptiScaler.asi"
     echo ""
-    echo "  --overwrite=<y|n>       Overwrite existing file (y/n)"
-    echo "  --using_nvidia=<y|n>    Using Nvidia GPU (y/n)"
-    echo "  --using_dlss=<y|n>      Use DLSS inputs/spoofing (y/n)"
-    echo "  -h, --help              Show this help message"
+    echo "  --overwrite=<y|n>       是否覆盖现有文件（y/n）"
+    echo "  --using_nvidia=<y|n>    是否使用 NVIDIA GPU（y/n）"
+    echo "  --using_dlss=<y|n>      是否使用 DLSS 输入/显卡伪装（y/n）"
+    echo "  -h, --help              显示此帮助信息"
     echo ""
-    echo "Example:"
+    echo "示例："
     echo "  $0 --filename=dxgi.dll --overwrite=y --using_nvidia=n --using_dlss=y"
     echo ""
     exit 0
@@ -45,7 +45,7 @@ echo "+#+    +#+ +#+            +#+         +#+            +#+ +#+        +#+   
 echo "#+#    #+# #+#            #+#         #+#     #+#    #+# #+#    #+# #+#     #+# #+#        #+#        #+#    #+# "
 echo " ########  ###            ###     ###########  ########   ########  ###     ### ########## ########## ###    ### "
 echo ""
-echo "Coping is strong with this one..."
+echo "这次一定能行……"
 echo ""
 
 # Get the script directory
@@ -58,31 +58,31 @@ rm -f "$SCRIPT_DIR/setup_windows.bat" 2>/dev/null
 
 # Check if OptiScaler.dll exists
 if [ ! -f "OptiScaler.dll" ]; then
-    echo "OptiScaler \"OptiScaler.dll\" file is not found!"
-    echo "Please make sure you extracted all OptiScaler files to the game folder."
+    echo "未找到 OptiScaler 文件 \"OptiScaler.dll\"！"
+    echo "请确认已将 OptiScaler 的全部文件解压到游戏文件夹。"
     echo ""
-    echo "For Unreal Engine games, look for the game executable in:"
+    echo "对于虚幻引擎游戏，请在以下位置查找游戏可执行文件："
     echo "- <path-to-game>/Game-or-Project-name/Binaries/Win64/"
-    echo "- Ignore the Engine folder"
+    echo "- 请忽略 Engine 文件夹"
     echo ""
-    read -p "Press Enter to exit..."
+    read -p "请按 Enter 键退出……"
     exit 1
 fi
 
 # Unreal Engine detection (skip for headless)
 if [ -d "$SCRIPT_DIR/Engine" ] && [ -z "$selected_filename" ]; then
-    echo "Found Engine folder, if this is an Unreal Engine game then please extract OptiScaler to #CODENAME#/Binaries/Win64"
+    echo "检测到 Engine 文件夹。如果这是虚幻引擎游戏，请将 OptiScaler 解压到 #CODENAME#/Binaries/Win64。"
     echo ""
 
     while true; do
-        read -p "Continue installation to current folder? [y/n]: " continue_choice
+        read -p "是否仍安装到当前文件夹？请输入 y 或 n：" continue_choice
         continue_choice=$(echo "$continue_choice" | tr -d ' ')
 
         if [ "$continue_choice" = "y" ] || [ "$continue_choice" = "Y" ]; then
             break
         elif [ "$continue_choice" = "n" ] || [ "$continue_choice" = "N" ]; then
-            echo "Installation cancelled."
-            read -p "Press Enter to exit..."
+            echo "安装已取消。"
+            read -p "请按 Enter 键退出……"
             exit 0
         fi
     done
@@ -96,7 +96,7 @@ select_filename() {
                 return
                 ;;
             *)
-                echo "Invalid filename: $selected_filename"
+                echo "无效的文件名：$selected_filename"
                 exit 1
                 ;;
         esac
@@ -104,7 +104,8 @@ select_filename() {
     
     while true; do
         echo ""
-        echo "Choose a filename for OptiScaler (default is dxgi.dll):"
+        echo "请选择 OptiScaler 使用的文件名（默认 dxgi.dll，兼容性最佳）："
+        echo "（Vulkan 游戏建议使用 winmm.dll）"
         echo " [1] dxgi.dll"
         echo " [2] winmm.dll"
         echo " [3] version.dll"
@@ -114,7 +115,7 @@ select_filename() {
         echo " [7] winhttp.dll"
         echo " [8] OptiScaler.asi"
 
-        read -p "Enter 1-8 (or press Enter for default): " filename_choice
+        read -p "请输入 1-8（直接按 Enter 使用默认值）：" filename_choice
 
         case "$filename_choice" in
             ""|"1")
@@ -143,7 +144,7 @@ select_filename() {
                 ;;
             *)
                 clear
-                echo "Invalid choice. Please select a valid option."
+                echo "选择无效，请输入有效选项。"
                 echo ""
                 continue
                 ;;
@@ -152,20 +153,20 @@ select_filename() {
         # Check if file already exists
         if [ -f "$selected_filename" ]; then
             echo ""
-            echo "WARNING: $selected_filename already exists in the current folder."
+            echo "警告：当前文件夹中已存在 $selected_filename。"
             echo ""
             
             if [ -n "$overwrite_choice" ]; then
                 if [[ "$overwrite_choice" =~ ^(yes|y)$ ]]; then
                     break
                 else
-                    echo "File exists and overwrite_choice=$overwrite_choice, exiting."
+                    echo "文件已存在，且 overwrite_choice=$overwrite_choice；正在退出。"
                     exit 1
                 fi
             fi
 
             while true; do
-                read -p "Do you want to overwrite it? [y/n]: " overwrite_choice
+                read -p "是否覆盖此文件？请输入 y 或 n：" overwrite_choice
                 overwrite_choice=${overwrite_choice,,} 
 
                 if [[ "$overwrite_choice" =~ ^(yes|y)$ ]]; then
@@ -175,7 +176,7 @@ select_filename() {
                     break  # Break out of the inner loop, continue filename selection
                 else
                     clear
-                    echo "Invalid choice. Please enter 'y' or 'n'."
+                    echo "选择无效，请输入 y 或 n。"
                 fi
             done
 	    else
@@ -191,18 +192,19 @@ NVIDIA_DETECTED=false
 if command -v nvidia-smi >/dev/null 2>&1; then
     if nvidia-smi >/dev/null 2>&1; then
         NVIDIA_DETECTED=true
-        echo "Nvidia GPU detected."
+        echo "检测到 NVIDIA GPU。"
     fi
 fi
 
 while [ -z "$using_nvidia" ]; do
     echo ""
+    echo "AMD Radeon RX 9070 XT 属于 AMD，请选择 n。"
     if [ "$NVIDIA_DETECTED" = true ]; then
         default_value="y"
-        read -r -p "Are you using an Nvidia GPU [Y/n]: " using_nvidia
+        read -r -p "你使用的是 NVIDIA GPU 吗？[Y/n]：" using_nvidia
     else
         default_value="n"
-        read -r -p "Are you using an Nvidia GPU [y/N]: " using_nvidia
+        read -r -p "你使用的是 NVIDIA GPU 吗？[y/N]：" using_nvidia
     fi
 
     using_nvidia=${using_nvidia,,}
@@ -211,7 +213,8 @@ while [ -z "$using_nvidia" ]; do
     if [[ "$using_nvidia" =~ ^(no|n)$ ]]; then
         while [ -z "$using_dlss" ]; do
             echo ""
-            read -r -p "Will you try to use DLSS inputs? (enables spoofing, required for DLSS FG, Reflex->AL2) [Y/n]: " using_dlss
+            echo "AMD Radeon RX 9070 XT 推荐启用此项。"
+            read -r -p "是否使用游戏的 DLSS 输入？（会启用显卡伪装；DLSS-FG 与 Reflex→AL2 需要此项）[Y/n]：" using_dlss
 
             using_dlss=${using_dlss,,}
             using_dlss=${using_dlss:-y}
@@ -220,18 +223,18 @@ while [ -z "$using_nvidia" ]; do
                 # Disable spoofing
                 config_file="OptiScaler.ini"
                 if [ ! -f "$config_file" ]; then
-                    echo "Config file not found: $config_file"
-                    read -p "Press Enter to continue..."
+                    echo "找不到配置文件：$config_file"
+                    read -p "请按 Enter 键继续……"
                 else
                     # Use sed to replace Dxgi=auto with Dxgi=false
                     sed -i 's/Dxgi=auto/Dxgi=false/g' "$config_file"
-                    echo "Spoofing disabled in configuration."
+                    echo "已在配置中禁用显卡伪装。"
                 fi
                 break
             elif [[ "$using_dlss" =~ ^(yes|y)$ ]]; then
                 break
             else
-                echo "Invalid choice. Please enter 'y' or 'n'."
+                echo "选择无效，请输入 y 或 n。"
                 continue
             fi
         done
@@ -239,7 +242,7 @@ while [ -z "$using_nvidia" ]; do
     elif [[ "$using_nvidia" =~ ^(yes|y)$ ]]; then
         break
     else
-        echo "Invalid choice. Please enter 'y' or 'n'."
+        echo "选择无效，请输入 y 或 n。"
         continue
     fi
 done
@@ -247,16 +250,16 @@ done
 # Rename OptiScaler file
 echo ""
 if [ "$overwrite_choice" = "y" ] || [ "$overwrite_choice" = "Y" ]; then
-    echo "Removing previous $selected_filename..."
+    echo "正在删除旧的 $selected_filename……"
     rm -f "$selected_filename"
 fi
 
-echo "Renaming OptiScaler file to $selected_filename..."
+echo "正在将 OptiScaler 文件重命名为 $selected_filename……"
 if ! mv "$OPTISCALER_FILE" "$selected_filename"; then
     echo ""
-    echo "ERROR: Failed to rename OptiScaler file to $selected_filename."
-    echo "Please check file permissions and try again."
-    read -p "Press Enter to exit..."
+    echo "错误：无法将 OptiScaler 文件重命名为 $selected_filename。"
+    echo "请检查文件权限后重试。"
+    read -p "请按 Enter 键退出……"
     exit 1
 fi
 
@@ -267,11 +270,11 @@ create_uninstaller() {
 
 show_help() {
     echo ""
-    echo "Usage: $0 [OPTIONS]"
+    echo "用法：$0 [选项]"
     echo ""
-    echo "Options:"
-    echo "  --remove=<y|n>    Confirm removal (y/n)"
-    echo "  -h, --help        Show this help message"
+    echo "选项："
+    echo "  --remove=<y|n>    确认是否卸载（y/n）"
+    echo "  -h, --help        显示此帮助信息"
     echo ""
     exit 0
 }
@@ -292,16 +295,16 @@ echo "+#+    +#+ +#+            +#+         +#+            +#+ +#+        +#+   
 echo "#+#    #+# #+#            #+#         #+#     #+#    #+# #+#    #+# #+#     #+# #+#        #+#        #+#    #+# "
 echo " ########  ###            ###     ###########  ########   ########  ###     ### ########## ########## ###    ### "
 echo ""
-echo "Coping is strong with this one..."
+echo "这次一定能行……"
 echo ""
 
 if [ -z "$remove_choice" ]; then
-    read -p "Do you want to remove OptiScaler? [y/n]: " remove_choice
+    read -p "是否卸载 OptiScaler？请输入 y 或 n：" remove_choice
 fi
 
 if [ "$remove_choice" = "y" ] || [ "$remove_choice" = "Y" ]; then
     echo ""
-    echo "Removing OptiScaler files..."
+    echo "正在删除 OptiScaler 文件……"
     
     # Remove OptiScaler files
     rm -f OptiScaler.log
@@ -319,19 +322,19 @@ if [ "$remove_choice" = "y" ] || [ "$remove_choice" = "Y" ]; then
     rm -rf Licenses
     
     echo ""
-    echo "OptiScaler removed!"
+    echo "OptiScaler 已卸载！"
     echo ""
     
     # Remove this uninstaller
     rm -f "$0"
 else
     echo ""
-    echo "Operation cancelled."
+    echo "操作已取消。"
     echo ""
 fi
 
 if [ $# -eq 0 ]; then
-    read -p "Press Enter to exit..."
+    read -p "请按 Enter 键退出……"
 fi
 EOF
 
@@ -342,7 +345,7 @@ EOF
     chmod +x "remove_optiscaler.sh"
     
     echo ""
-    echo "Uninstaller created: remove_optiscaler.sh"
+    echo "卸载器已创建：remove_optiscaler.sh"
     echo ""
 }
 
@@ -351,7 +354,7 @@ create_uninstaller
 
 # Success message
 clear
-echo " OptiScaler setup completed successfully..."
+echo " OptiScaler 安装成功……"
 echo ""
 echo "  ___                 "
 echo " (_         '        "
@@ -360,18 +363,18 @@ echo "         _/      /    "
 echo ""
 
 # Display Wine DLL override information
-echo "IMPORTANT FOR LINUX/WINE USERS:"
-echo "You might need to add the renamed DLL to Wine overrides"
-echo "Example, if using Steam, add this to launch options:"
+echo "Linux/Wine 用户请注意："
+echo "你可能需要将重命名后的 DLL 添加到 Wine 覆盖设置中。"
+echo "例如使用 Steam 时，请在启动选项中加入："
 echo ""
 echo "WINEDLLOVERRIDES=$selected_filename=n,b %COMMAND%"
 echo ""
-echo "Remember: Insert key opens OptiScaler overlay, Page Up/Down for performance stats"
+echo "提示：Insert 键可打开 OptiScaler 叠加层，Page Up/Down 键可查看性能统计。"
 echo ""
 
 # Cleanup - remove setup script
 if [ $# -eq 0 ]; then
-    read -p "Press Enter to exit..."
+    read -p "请按 Enter 键退出……"
 fi
 
 rm -f "$0"
