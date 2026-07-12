@@ -1445,8 +1445,8 @@ void MenuCommon::UpdateVersionAndStartupNotifications(RenderMenuContext& ctx)
             ImGuiToast notification { ImGuiToastType::Warning, 10000 };
             notification.setTitle(MenuLocalization::TranslateText("Late Streamline hook detected"));
             notification.setContent(
-                MenuLocalization::TranslateText(
-                    "Consider renaming OptiScaler from %s to other supported name.\nYou may experience issues otherwise."),
+                MenuLocalization::TranslateText("Consider renaming OptiScaler from %s to other supported name.\nYou "
+                                                "may experience issues otherwise."),
                 filename.c_str());
             ImGui::InsertNotification(notification);
         }
@@ -4406,8 +4406,7 @@ void MenuCommon::RenderFrameGenerationRuntimeSettings(RenderMenuContext& ctx)
                 if (auto count = state.dlssgDetectedInterpolationCount; count > 0)
                 {
                     ImGui::TextColored(toneMapColor(ImVec4(0.f, 1.f, 0.25f, 1.f)),
-                                       std::format("{} {}x", MenuLocalization::TranslateText("ON"), count + 1)
-                                           .c_str());
+                                       std::format("{} {}x", MenuLocalization::TranslateText("ON"), count + 1).c_str());
                 }
                 else
                 {
@@ -5438,14 +5437,14 @@ void MenuCommon::RenderActiveImageSettings(RenderMenuContext& ctx)
 
                 if (currentFeature != nullptr && !currentFeature->IsFrozen())
                 {
-                    ImGui::Text("Output Scaling is %s, Target Res: %dx%d (%.2f)\nJitter Count: %d",
-                                MenuLocalization::TranslateText(
-                                    config->OutputScalingEnabled.value_or_default() ? "ENABLED" : "DISABLED"),
-                                (uint32_t) (currentFeature->DisplayWidth() * _ssRatio),
-                                (uint32_t) (currentFeature->DisplayHeight() * _ssRatio),
-                                ((float) currentFeature->DisplayWidth() * _ssRatio) /
-                                    (float) currentFeature->RenderWidth(),
-                                currentFeature->JitterCount());
+                    ImGui::Text(
+                        "Output Scaling is %s, Target Res: %dx%d (%.2f)\nJitter Count: %d",
+                        MenuLocalization::TranslateText(config->OutputScalingEnabled.value_or_default() ? "ENABLED"
+                                                                                                        : "DISABLED"),
+                        (uint32_t) (currentFeature->DisplayWidth() * _ssRatio),
+                        (uint32_t) (currentFeature->DisplayHeight() * _ssRatio),
+                        ((float) currentFeature->DisplayWidth() * _ssRatio) / (float) currentFeature->RenderWidth(),
+                        currentFeature->JitterCount());
                 }
 
                 ImGui::EndDisabled();

@@ -140,9 +140,14 @@ inline std::wstring FindCjkFontPath()
         if (GetEnvironmentVariableW(L"LOCALAPPDATA", localAppData, MAX_PATH) > 0)
             roots.emplace_back(std::filesystem::path(localAppData) / L"Microsoft" / L"Windows" / L"Fonts");
 
-        constexpr std::array candidates = { L"msyh.ttc",          L"msyhbd.ttc",       L"simhei.ttf",
-                                             L"simsun.ttc",        L"Deng.ttf",          L"Dengb.ttf",
-                                             L"NotoSansSC-Regular.otf", L"NotoSansCJK-Regular.ttc" };
+        constexpr std::array candidates = { L"msyh.ttc",
+                                            L"msyhbd.ttc",
+                                            L"simhei.ttf",
+                                            L"simsun.ttc",
+                                            L"Deng.ttf",
+                                            L"Dengb.ttf",
+                                            L"NotoSansSC-Regular.otf",
+                                            L"NotoSansCJK-Regular.ttc" };
 
         std::error_code error;
         for (const auto& root : roots)
@@ -237,18 +242,16 @@ inline bool LocalizedInputScalar(const char* label, ImGuiDataType dataType, void
 }
 
 inline void LocalizedPlotLines(const char* label, const float* values, int valuesCount, int valuesOffset = 0,
-                               const char* overlayText = nullptr, float scaleMin = FLT_MAX,
-                               float scaleMax = FLT_MAX, ImVec2 graphSize = ImVec2(0, 0), int stride = sizeof(float))
+                               const char* overlayText = nullptr, float scaleMin = FLT_MAX, float scaleMax = FLT_MAX,
+                               ImVec2 graphSize = ImVec2(0, 0), int stride = sizeof(float))
 {
     PlotLines(MenuLocalization::TranslateLabel(label), values, valuesCount, valuesOffset,
-              MenuLocalization::TranslateText(overlayText),
-              scaleMin, scaleMax, graphSize, stride);
+              MenuLocalization::TranslateText(overlayText), scaleMin, scaleMax, graphSize, stride);
 }
 
 inline void LocalizedPlotLines(const char* label, float (*valuesGetter)(void* data, int index), void* data,
                                int valuesCount, int valuesOffset = 0, const char* overlayText = nullptr,
-                               float scaleMin = FLT_MAX, float scaleMax = FLT_MAX,
-                               ImVec2 graphSize = ImVec2(0, 0))
+                               float scaleMin = FLT_MAX, float scaleMax = FLT_MAX, ImVec2 graphSize = ImVec2(0, 0))
 {
     PlotLines(MenuLocalization::TranslateLabel(label), valuesGetter, data, valuesCount, valuesOffset,
               MenuLocalization::TranslateText(overlayText), scaleMin, scaleMax, graphSize);
@@ -276,10 +279,7 @@ inline bool LocalizedSelectable(const char* label, bool* selected, ImGuiSelectab
     return Selectable(MenuLocalization::TranslateLabel(label), selected, flags, size);
 }
 
-inline void LocalizedSeparatorText(const char* label)
-{
-    SeparatorText(MenuLocalization::TranslateText(label));
-}
+inline void LocalizedSeparatorText(const char* label) { SeparatorText(MenuLocalization::TranslateText(label)); }
 
 inline void LocalizedSetTooltip(const char* format, ...)
 {
@@ -346,10 +346,7 @@ inline void LocalizedTextLinkOpenURL(const char* label, const char* url = nullpt
     TextLinkOpenURL(MenuLocalization::TranslateLabel(label), url);
 }
 
-inline bool LocalizedTreeNode(const char* label)
-{
-    return TreeNode(MenuLocalization::TranslateLabel(label));
-}
+inline bool LocalizedTreeNode(const char* label) { return TreeNode(MenuLocalization::TranslateLabel(label)); }
 
 inline ImVec2 LocalizedCalcTextSize(const char* text, const char* textEnd = nullptr,
                                     bool hideTextAfterDoubleHash = false, float wrapWidth = -1.0f)
