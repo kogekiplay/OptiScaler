@@ -11,6 +11,9 @@
 </div>
 <br />
 
+> 简体中文 fork：请查看 [README.zh-CN.md](README.zh-CN.md)。自动构建发布在
+> [nightly-zh-cn](https://github.com/kogekiplay/OptiScaler/releases/tag/nightly-zh-cn)。
+
 ## Table of Contents
 
 **1.** [**About**](#about)  

@@ -1,0 +1,5 @@
+    { "Language", "界面语言" },
+    { "Simplified Chinese", "简体中文" },
+    { "English", "英语" },
+    { "The language changes immediately. Restart the game if the Chinese font cannot be loaded.",
+      "语言会立即切换。如果中文字体未能加载，请重启游戏。" },
